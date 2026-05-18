@@ -235,7 +235,7 @@ This project is licensed under the **MIT License** — see [LICENSE](LICENSE) fo
 
 <div align="center">
 
-**Made with ♟ and 🧠 by [Morteza Mohasebati](https://github.com/Mortezamohasebati),  [Ali Abroudoust](https://github.com/luuucciiffeerr), [VAhid Seyyedy](https://github.com/vahidseyyedi) and and [Parsa Behjati](https://github.com/parsaB2004) **
+**Made with ♟ and 🧠 by [Morteza Mohasebati](https://github.com/Mortezamohasebati),  [Ali Abroudoust](https://github.com/luuucciiffeerr), [VAhid Seyyedy](https://github.com/vahidseyyedi) and  [Parsa Behjati](https://github.com/parsaB2004) **
 
 *"In Hex, unlike Chess, there is always a winner — and always a lesson."*
 
