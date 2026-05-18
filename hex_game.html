@@ -1,0 +1,798 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HEX — AI Strategy Board Game</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;900&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg:       #070c18;
+      --surf:     #0f1824;
+      --surf2:    #162033;
+      --bord:     #1a2840;
+      --x:        #f5a623;
+      --x-dim:    rgba(245,166,35,0.12);
+      --x-glow:   rgba(245,166,35,0.40);
+      --o:        #38b2ff;
+      --o-dim:    rgba(56,178,255,0.12);
+      --o-glow:   rgba(56,178,255,0.40);
+      --text:     #a8bdd8;
+      --muted:    #374e68;
+      --white:    #dce8f5;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Rajdhani', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding-bottom: 3rem;
+      overflow-x: hidden;
+    }
+
+    /* ── Starfield background ─────────────────────── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        radial-gradient(1px 1px at 12% 18%, rgba(245,166,35,0.25) 0%, transparent 100%),
+        radial-gradient(1px 1px at 85% 9%, rgba(56,178,255,0.20) 0%, transparent 100%),
+        radial-gradient(1px 1px at 40% 75%, rgba(56,178,255,0.15) 0%, transparent 100%),
+        radial-gradient(1px 1px at 73% 52%, rgba(245,166,35,0.12) 0%, transparent 100%),
+        radial-gradient(1px 1px at 5% 90%, rgba(56,178,255,0.18) 0%, transparent 100%),
+        radial-gradient(1px 1px at 95% 85%, rgba(245,166,35,0.10) 0%, transparent 100%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ── Header ───────────────────────────────────── */
+    .app-header {
+      padding: 2rem 0 0.6rem;
+      text-align: center;
+      position: relative;
+      z-index: 1;
+    }
+
+    .logo {
+      font-family: 'Orbitron', sans-serif;
+      font-weight: 900;
+      font-size: clamp(3.2rem, 7vw, 5.2rem);
+      letter-spacing: 0.45em;
+      background: linear-gradient(135deg, var(--x) 0%, #ffe0a0 35%, #c0e8ff 65%, var(--o) 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      line-height: 1;
+      filter: drop-shadow(0 0 30px rgba(245,166,35,0.25));
+    }
+
+    .tagline {
+      font-size: 0.72rem;
+      letter-spacing: 0.32em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-top: 0.4rem;
+    }
+
+    /* ── Layout ───────────────────────────────────── */
+    .game-layout {
+      display: flex;
+      align-items: flex-start;
+      gap: 1.4rem;
+      padding: 0.8rem 1.5rem;
+      max-width: 1140px;
+      width: 100%;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* ── Panels ───────────────────────────────────── */
+    .panel {
+      background: var(--surf);
+      border: 1px solid var(--bord);
+      border-radius: 16px;
+      padding: 1.2rem;
+      width: 172px;
+      flex-shrink: 0;
+      transition: border-color 0.3s;
+    }
+
+    .panel-x { border-color: #1d2e48; }
+    .panel-o { border-color: #1d2e48; }
+    .panel-x.active-panel { border-color: rgba(245,166,35,0.5); box-shadow: 0 0 24px rgba(245,166,35,0.10); }
+    .panel-o.active-panel { border-color: rgba(56,178,255,0.5); box-shadow: 0 0 24px rgba(56,178,255,0.10); }
+
+    .section-label {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 0.58rem;
+      font-weight: 600;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--muted);
+      border-bottom: 1px solid var(--bord);
+      padding-bottom: 0.4rem;
+      margin-bottom: 0.85rem;
+    }
+
+    /* ── Player cards ─────────────────────────────── */
+    .player-card {
+      text-align: center;
+      padding: 0.8rem 0.5rem 0.7rem;
+      border-radius: 11px;
+      background: var(--surf2);
+      margin-bottom: 1rem;
+      transition: box-shadow 0.3s;
+    }
+
+    .p-icon {
+      font-size: 2rem;
+      line-height: 1;
+      margin-bottom: 0.2rem;
+    }
+
+    .p-name {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.18em;
+      margin-bottom: 0.1rem;
+    }
+
+    .p-score {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 3rem;
+      font-weight: 900;
+      line-height: 1.05;
+    }
+
+    .p-dir {
+      font-size: 0.68rem;
+      letter-spacing: 0.06em;
+      color: var(--muted);
+      margin-top: 0.25rem;
+    }
+
+    .panel-x .p-icon, .panel-x .p-name, .panel-x .p-score { color: var(--x); }
+    .panel-o .p-icon, .panel-o .p-name, .panel-o .p-score { color: var(--o); }
+
+    .panel-x .player-card.glow { box-shadow: 0 0 18px var(--x-glow); }
+    .panel-o .player-card.glow { box-shadow: 0 0 18px var(--o-glow); }
+
+    /* ── History ──────────────────────────────────── */
+    .history-wrap {
+      max-height: 210px;
+      overflow-y: auto;
+    }
+
+    .history-wrap::-webkit-scrollbar { width: 3px; }
+    .history-wrap::-webkit-scrollbar-track { background: transparent; }
+    .history-wrap::-webkit-scrollbar-thumb { background: var(--bord); border-radius: 2px; }
+
+    .hist-item {
+      font-size: 0.78rem;
+      color: var(--muted);
+      padding: 0.14rem 0;
+      display: flex;
+      gap: 0.4rem;
+      align-items: center;
+    }
+
+    .hist-item .px { color: var(--x); font-weight: 700; }
+    .hist-item .po { color: var(--o); font-weight: 700; }
+
+    .rules-text {
+      font-size: 0.78rem;
+      line-height: 1.65;
+      color: var(--muted);
+    }
+
+    /* ── Board area ───────────────────────────────── */
+    .board-area {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.55rem;
+    }
+
+    .board-lbl {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 0.62rem;
+      font-weight: 600;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+    }
+
+    .board-lbl.lx { color: var(--x); }
+    .board-lbl.lo { color: var(--o); }
+
+    .board-row {
+      display: flex;
+      align-items: center;
+      gap: 0.7rem;
+    }
+
+    .side-lbl {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 0.50rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      writing-mode: vertical-rl;
+      text-orientation: mixed;
+      color: var(--x);
+    }
+
+    #board-svg { display: block; }
+
+    /* ── Status bar ───────────────────────────────── */
+    #status-bar {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 0.82rem;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-align: center;
+      padding: 0.62rem 1.8rem;
+      background: var(--surf);
+      border: 1px solid var(--bord);
+      border-radius: 9px;
+      min-width: 300px;
+      transition: color 0.35s;
+    }
+
+    /* ── Thinking dots ────────────────────────────── */
+    @keyframes dotpulse {
+      0%, 80%, 100% { opacity: 0.15; transform: translateY(0); }
+      40% { opacity: 1; transform: translateY(-3px); }
+    }
+
+    .dot {
+      display: inline-block;
+      animation: dotpulse 1.3s ease-in-out infinite;
+    }
+    .dot:nth-child(2) { animation-delay: 0.2s; }
+    .dot:nth-child(3) { animation-delay: 0.4s; }
+
+    /* ── Controls ─────────────────────────────────── */
+    .controls {
+      display: flex;
+      align-items: center;
+      gap: 1.2rem;
+      padding: 0.8rem 0 0;
+      position: relative;
+      z-index: 1;
+    }
+
+    .size-wrap {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.8rem;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+      text-transform: uppercase;
+    }
+
+    select {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 0.92rem;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      background: var(--surf);
+      color: var(--text);
+      border: 1px solid var(--bord);
+      border-radius: 8px;
+      padding: 0.48rem 0.9rem;
+      cursor: pointer;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    select:hover { border-color: rgba(245,166,35,0.5); }
+
+    .btn {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      padding: 0.62rem 1.6rem;
+      border: none;
+      border-radius: 9px;
+      cursor: pointer;
+      transition: all 0.22s ease;
+    }
+
+    .btn-new {
+      background: linear-gradient(135deg, #f5a623 0%, #c07c10 100%);
+      color: #07090f;
+    }
+
+    .btn-new:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px var(--x-glow);
+    }
+
+    .btn-new:active { transform: translateY(0); }
+
+    /* ── Win highlight ────────────────────────────── */
+    @keyframes winpulse {
+      0%, 100% { opacity: 0.9; }
+      50% { opacity: 1; filter: brightness(1.35) drop-shadow(0 0 6px currentColor); }
+    }
+
+    .wc { animation: winpulse 0.9s ease-in-out infinite; }
+
+    /* ── Footer ───────────────────────────────────── */
+    .footer {
+      position: relative;
+      z-index: 1;
+      font-size: 0.68rem;
+      letter-spacing: 0.12em;
+      color: var(--muted);
+      text-transform: uppercase;
+      margin-top: 0.6rem;
+      opacity: 0.6;
+    }
+  </style>
+</head>
+<body>
+
+<header class="app-header">
+  <div class="logo">HEX</div>
+  <div class="tagline">AI Strategy Board Game &nbsp;·&nbsp; Alpha-Beta Minimax</div>
+</header>
+
+<div class="game-layout">
+
+  <!-- LEFT PANEL (Player X) -->
+  <div class="panel panel-x" id="panel-x">
+    <div class="section-label">Player</div>
+    <div class="player-card" id="card-x">
+      <div class="p-icon">⬡</div>
+      <div class="p-name">YOU</div>
+      <div class="p-score" id="score-x">0</div>
+      <div class="p-dir">← Left to Right →</div>
+    </div>
+    <div class="section-label" style="margin-top:0.2rem">How to Play</div>
+    <p class="rules-text">
+      Connect your <span style="color:var(--x)">LEFT</span> and
+      <span style="color:var(--x)">RIGHT</span> borders with a chain
+      of hex stones. Click any empty cell to place your piece.
+    </p>
+  </div>
+
+  <!-- BOARD -->
+  <div class="board-area">
+    <div class="board-lbl lo">← &nbsp; O · Top to Bottom &nbsp; →</div>
+    <div class="board-row">
+      <div class="side-lbl">← X · Left</div>
+      <svg id="board-svg"></svg>
+      <div class="side-lbl" style="transform:rotate(180deg)">← X · Right</div>
+    </div>
+    <div class="board-lbl lo">← &nbsp; O · Top to Bottom &nbsp; →</div>
+    <div id="status-bar">Your turn — click a hex</div>
+  </div>
+
+  <!-- RIGHT PANEL (AI O) -->
+  <div class="panel panel-o" id="panel-o">
+    <div class="section-label">AI Opponent</div>
+    <div class="player-card" id="card-o">
+      <div class="p-icon">⬡</div>
+      <div class="p-name">AI</div>
+      <div class="p-score" id="score-o">0</div>
+      <div class="p-dir">↑ Top to Bottom ↓</div>
+    </div>
+    <div class="section-label" style="margin-top:0.2rem">Move Log</div>
+    <div class="history-wrap" id="history"></div>
+  </div>
+
+</div>
+
+<div class="controls">
+  <div class="size-wrap">
+    Board
+    <select id="board-size" onchange="newGame()">
+      <option value="5">5 × 5</option>
+      <option value="7">7 × 7</option>
+      <option value="9" selected>9 × 9</option>
+      <option value="11">11 × 11</option>
+    </select>
+  </div>
+  <button class="btn btn-new" onclick="newGame()">⟳ &nbsp;New Game</button>
+</div>
+
+<div class="footer">Hex Board Game · Python AI ported to JS · MIT License</div>
+
+<script>
+// ══════════════════════════════════════════════════════════════
+//  HEX GAME  –  Full Implementation
+//
+//  Player X  (YOU)  : connects Left ↔ Right
+//  Player O  (AI)   : connects Top  ↕ Bottom
+//  AI uses Minimax with Alpha-Beta Pruning
+//  Evaluation: shortest-path resistance (Dijkstra 0-1 BFS)
+// ══════════════════════════════════════════════════════════════
+
+const DIRS = [[-1,0],[1,0],[0,-1],[0,1],[-1,1],[1,-1]];
+
+// ── State ─────────────────────────────────────────────────────
+let G = {
+  n: 9,
+  board: null,        // [n][n] '' | 'X' | 'O'
+  turn: 'X',          // whose turn
+  winner: null,
+  winPath: null,      // [[r,c], ...]
+  scores: {X:0, O:0},
+  thinking: false,
+  history: []         // [{player,r,c}]
+};
+
+function initGame(n) {
+  G.n = n;
+  G.board = Array.from({length:n}, () => new Array(n).fill(''));
+  G.turn = 'X';
+  G.winner = null;
+  G.winPath = null;
+  G.thinking = false;
+  G.history = [];
+}
+
+function newGame() {
+  const n = +document.getElementById('board-size').value;
+  initGame(n);
+  render();
+  refreshStatus();
+}
+
+// ── Win detection (BFS path-finding) ─────────────────────────
+function findWinPath(board, player, n) {
+  // X wins: left→right (col 0 → col n-1)
+  // O wins: top→bottom (row 0 → row n-1)
+  const isSource = player === 'X' ? (_,c) => c===0 : (r,_) => r===0;
+  const isTarget = player === 'X' ? (_,c) => c===n-1 : (r,_) => r===n-1;
+
+  const par = {};
+  const q = [];
+
+  for (let r=0;r<n;r++) for (let c=0;c<n;c++) {
+    if (board[r][c]===player && isSource(r,c)) {
+      const k=`${r},${c}`;
+      if (!(k in par)) { par[k]=null; q.push([r,c]); }
+    }
+  }
+
+  let qi=0;
+  while (qi<q.length) {
+    const [r,c]=q[qi++];
+    if (isTarget(r,c)) {
+      const path=[];
+      let k=`${r},${c}`;
+      while (k!==null) {
+        path.push(k.split(',').map(Number));
+        k=par[k];
+      }
+      return path;
+    }
+    for (const [dr,dc] of DIRS) {
+      const nr=r+dr,nc=c+dc;
+      if (nr<0||nr>=n||nc<0||nc>=n||board[nr][nc]!==player) continue;
+      const nk=`${nr},${nc}`;
+      if (!(nk in par)) { par[nk]=`${r},${c}`; q.push([nr,nc]); }
+    }
+  }
+  return null;
+}
+
+// ── Evaluation: Dijkstra shortest-path resistance ─────────────
+function pathCost(board, player, n) {
+  // Cost: own piece = 0, empty = 1, opponent = blocked
+  const opp = player==='X'?'O':'X';
+  const INF = n*n+2;
+  const dist = Array.from({length:n}, () => new Array(n).fill(INF));
+  const vis  = Array.from({length:n}, () => new Array(n).fill(false));
+
+  const initCell = (r,c) => {
+    if (board[r][c]===opp) return;
+    dist[r][c] = board[r][c]===player ? 0 : 1;
+  };
+
+  if (player==='O') {
+    for (let c=0;c<n;c++) initCell(0,c);
+  } else {
+    for (let r=0;r<n;r++) initCell(r,0);
+  }
+
+  // Simple Dijkstra (n ≤ 11, so n² ≤ 121 — trivially fast)
+  for (let iter=0;iter<n*n;iter++) {
+    let minD=INF,mr=-1,mc=-1;
+    for (let r=0;r<n;r++) for (let c=0;c<n;c++) {
+      if (!vis[r][c] && dist[r][c]<minD) { minD=dist[r][c]; mr=r; mc=c; }
+    }
+    if (mr<0) break;
+    vis[mr][mc]=true;
+    for (const [dr,dc] of DIRS) {
+      const nr=mr+dr,nc=mc+dc;
+      if (nr<0||nr>=n||nc<0||nc>=n||board[nr][nc]===opp) continue;
+      const nd=minD+(board[nr][nc]===player?0:1);
+      if (nd<dist[nr][nc]) dist[nr][nc]=nd;
+    }
+  }
+
+  let best=INF;
+  if (player==='O') { for (let c=0;c<n;c++) if (dist[n-1][c]<best) best=dist[n-1][c]; }
+  else              { for (let r=0;r<n;r++) if (dist[r][n-1]<best) best=dist[r][n-1]; }
+  return best>=INF ? n*n : best;
+}
+
+function evaluate(board, n) {
+  // Positive = good for O (maximiser)
+  return pathCost(board,'X',n) - pathCost(board,'O',n);
+}
+
+// ── Minimax with Alpha-Beta Pruning ──────────────────────────
+function minimax(board, n, depth, alpha, beta, maximize) {
+  if (findWinPath(board,'O',n)) return  5000+depth;
+  if (findWinPath(board,'X',n)) return -5000-depth;
+  if (depth===0) return evaluate(board,n);
+
+  if (maximize) {
+    let best=-Infinity;
+    loop:
+    for (let r=0;r<n;r++) for (let c=0;c<n;c++) {
+      if (board[r][c]) continue;
+      board[r][c]='O';
+      const v=minimax(board,n,depth-1,alpha,beta,false);
+      board[r][c]='';
+      if (v>best) best=v;
+      if (v>alpha) alpha=v;
+      if (beta<=alpha) break loop;
+    }
+    return best;
+  } else {
+    let best=Infinity;
+    loop:
+    for (let r=0;r<n;r++) for (let c=0;c<n;c++) {
+      if (board[r][c]) continue;
+      board[r][c]='X';
+      const v=minimax(board,n,depth-1,alpha,beta,true);
+      board[r][c]='';
+      if (v<best) best=v;
+      if (v<beta) beta=v;
+      if (beta<=alpha) break loop;
+    }
+    return best;
+  }
+}
+
+function bestAIMove(board, n) {
+  // Opening: take center
+  let empty=0;
+  for (let r=0;r<n;r++) for (let c=0;c<n;c++) if (!board[r][c]) empty++;
+  const mid=Math.floor(n/2);
+  if (empty===n*n) return [mid,mid];
+
+  const depth = n<=5 ? 5 : n<=7 ? 3 : 2;
+
+  // Move ordering: closer to center first → better alpha-beta pruning
+  const moves=[];
+  for (let r=0;r<n;r++) for (let c=0;c<n;c++) {
+    if (!board[r][c]) moves.push([r,c,Math.abs(r-mid)+Math.abs(c-mid)]);
+  }
+  moves.sort((a,b)=>a[2]-b[2]);
+
+  let bestVal=-Infinity, bestM=null;
+  for (const [r,c] of moves) {
+    board[r][c]='O';
+    const v=minimax(board,n,depth-1,-Infinity,Infinity,false);
+    board[r][c]='';
+    if (v>bestVal) { bestVal=v; bestM=[r,c]; }
+    if (bestVal>=5000) break; // winning move found — stop searching
+  }
+  return bestM;
+}
+
+// ── Game flow ─────────────────────────────────────────────────
+function onCellClick(r,c) {
+  if (G.winner||G.thinking||G.turn!=='X'||G.board[r][c]) return;
+  placeStone(r,c,'X');
+  if (!G.winner) doAI();
+}
+
+function placeStone(r,c,player) {
+  G.board[r][c]=player;
+  G.history.push({player,r,c});
+  const path=findWinPath(G.board,player,G.n);
+  if (path) {
+    G.winner=player;
+    G.winPath=path;
+    G.scores[player]++;
+  } else {
+    G.turn=G.turn==='X'?'O':'X';
+  }
+  render();
+  refreshStatus();
+}
+
+function doAI() {
+  G.thinking=true;
+  refreshStatus();
+  requestAnimationFrame(() => setTimeout(() => {
+    const m=bestAIMove(G.board,G.n);
+    G.thinking=false;
+    if (m) placeStone(m[0],m[1],'O');
+    else refreshStatus();
+  }, 25));
+}
+
+// ── Rendering constants ───────────────────────────────────────
+const HS_MAP = {5:40, 7:30, 9:22, 11:17};
+
+function hs() { return HS_MAP[G.n] || 22; }
+
+// ── Main render function ──────────────────────────────────────
+function render() {
+  const n   = G.n;
+  const HS  = hs();
+  const HW  = Math.sqrt(3)*HS;   // center-to-center horizontal
+  const RH  = 1.5*HS;            // center-to-center vertical
+  const GAP = 1.6;               // gap between cells (px)
+  const MX  = HS*2.6;            // margin left/right
+  const MY  = HS*2.6;            // margin top/bottom
+  const BW  = HS*0.46;           // border stripe width
+
+  // Board SVG dimensions
+  const svgW = MX + (n-1)*HW + (n-1)*HW/2 + HW + MX;
+  const svgH = MY + (n-1)*RH + 2*HS + MY;
+
+  // Geometry helpers
+  const hcx = (r,c) => MX + c*HW + r*HW/2;
+  const hcy = (r)   => MY + r*RH;
+
+  function hv(r,c,vi) {
+    const cx=hcx(r,c), cy=hcy(r);
+    const a=(60*vi-30)*Math.PI/180;
+    return [(cx+HS*Math.cos(a)).toFixed(2), (cy+HS*Math.sin(a)).toFixed(2)];
+  }
+
+  const pt = v => `${v[0]} ${v[1]}`;
+
+  function hpts(cx,cy,sz) {
+    return Array.from({length:6},(_,i)=>{
+      const a=(60*i-30)*Math.PI/180;
+      return `${(cx+sz*Math.cos(a)).toFixed(1)},${(cy+sz*Math.sin(a)).toFixed(1)}`;
+    }).join(' ');
+  }
+
+  // ── Border paths ─────────────────────────────────
+  // Left border (X — amber)
+  let lb=`M ${pt(hv(0,0,5))} L ${pt(hv(0,0,4))} L ${pt(hv(0,0,3))}`;
+  for (let r=1;r<n;r++) lb+=` L ${pt(hv(r,0,4))} L ${pt(hv(r,0,3))}`;
+
+  // Right border (X — amber)
+  let rb=`M ${pt(hv(0,n-1,0))} L ${pt(hv(0,n-1,1))}`;
+  for (let r=1;r<n;r++) rb+=` L ${pt(hv(r,n-1,0))} L ${pt(hv(r,n-1,1))}`;
+  rb+=` L ${pt(hv(n-1,n-1,2))}`;
+
+  // Top border (O — blue)
+  let tb=`M ${pt(hv(0,0,4))}`;
+  for (let c=0;c<n;c++) tb+=` L ${pt(hv(0,c,5))} L ${pt(hv(0,c,0))}`;
+
+  // Bottom border (O — blue)
+  let bb=`M ${pt(hv(n-1,0,3))}`;
+  for (let c=0;c<n;c++) bb+=` L ${pt(hv(n-1,c,2))} L ${pt(hv(n-1,c,1))}`;
+
+  const bord=(d,col)=>
+    `<path d="${d}" stroke="${col}" stroke-width="${BW}" stroke-linecap="round" stroke-linejoin="round" fill="none" opacity="0.88"/>`;
+
+  // ── Cells ─────────────────────────────────────────
+  const winSet=new Set((G.winPath||[]).map(([r,c])=>`${r},${c}`));
+  const {board,winner,thinking,turn}=G;
+  let cells='';
+
+  for (let r=0;r<n;r++) {
+    for (let c=0;c<n;c++) {
+      const cell=board[r][c];
+      const cx=hcx(r,c), cy=hcy(r);
+      const isWin=winSet.has(`${r},${c}`);
+      const canClick=!cell&&!winner&&!thinking&&turn==='X';
+
+      let fill,stroke,sw;
+      if      (cell==='X') { fill=isWin?'#ffd870':'#f5a623'; stroke=isWin?'#fff4cc':'#a86d10'; sw=isWin?2.5:1.5; }
+      else if (cell==='O') { fill=isWin?'#82ddff':'#38b2ff'; stroke=isWin?'#d0f0ff':'#1060a0'; sw=isWin?2.5:1.5; }
+      else                 { fill='#0f1824'; stroke='#1a2840'; sw=1; }
+
+      const filt=isWin?' filter="url(#glow)"':'';
+      const cur=canClick?' style="cursor:pointer"':'';
+      const cls=isWin?' class="wc"':'';
+
+      cells+=`<polygon points="${hpts(cx,cy,HS-GAP)}" fill="${fill}" stroke="${stroke}" stroke-width="${sw}" data-r="${r}" data-c="${c}"${filt}${cur}${cls}/>`;
+
+      // Subtle depth circle on placed stones
+      if (cell) {
+        cells+=`<circle cx="${cx.toFixed(1)}" cy="${cy.toFixed(1)}" r="${(HS*0.29).toFixed(1)}" fill="#000" opacity="0.16"/>`;
+      }
+    }
+  }
+
+  // ── Assemble SVG ──────────────────────────────────
+  const svg=document.getElementById('board-svg');
+  svg.setAttribute('viewBox',`0 0 ${Math.ceil(svgW)} ${Math.ceil(svgH)}`);
+  svg.setAttribute('width', Math.ceil(svgW));
+  svg.setAttribute('height',Math.ceil(svgH));
+
+  svg.innerHTML=`
+    <defs>
+      <filter id="glow" x="-40%" y="-40%" width="180%" height="180%">
+        <feGaussianBlur stdDeviation="3.5" result="b"/>
+        <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+      </filter>
+    </defs>
+    ${bord(lb,'#f5a623')}${bord(rb,'#f5a623')}
+    ${bord(tb,'#38b2ff')}${bord(bb,'#38b2ff')}
+    ${cells}
+  `;
+
+  // Re-attach events (innerHTML nukes them)
+  svg.querySelectorAll('polygon[data-r]').forEach(p => {
+    const r=+p.dataset.r, c=+p.dataset.c;
+    if (!board[r][c] && !winner && !thinking && turn==='X') {
+      p.addEventListener('mouseenter', () => {
+        p.setAttribute('fill','#1e2d4a');
+        p.setAttribute('stroke','#2a3e5e');
+      });
+      p.addEventListener('mouseleave', () => {
+        p.setAttribute('fill','#0f1824');
+        p.setAttribute('stroke','#1a2840');
+      });
+      p.addEventListener('click', () => onCellClick(r,c));
+    }
+  });
+
+  // ── Scores & history ──────────────────────────────
+  document.getElementById('score-x').textContent=G.scores.X;
+  document.getElementById('score-o').textContent=G.scores.O;
+
+  const hist=document.getElementById('history');
+  hist.innerHTML=[...G.history].reverse().slice(0,22).map(({player,r,c})=>
+    `<div class="hist-item"><span class="p${player.toLowerCase()}">${player==='X'?'YOU':'AI '}</span>&nbsp;(${r},${c})</div>`
+  ).join('');
+
+  // Active glow on player cards
+  const xActive=!winner&&turn==='X'&&!thinking;
+  const oActive=!winner&&(turn==='O'||thinking);
+  document.getElementById('card-x').classList.toggle('glow', xActive);
+  document.getElementById('card-o').classList.toggle('glow', oActive);
+  document.getElementById('panel-x').classList.toggle('active-panel', xActive);
+  document.getElementById('panel-o').classList.toggle('active-panel', oActive);
+}
+
+function refreshStatus() {
+  const bar=document.getElementById('status-bar');
+  if (G.winner) {
+    bar.style.color = G.winner==='X'?'var(--x)':'var(--o)';
+    bar.textContent = G.winner==='X'?'🎉  You Win!':'🤖  AI Wins!';
+  } else if (G.thinking) {
+    bar.style.color='var(--o)';
+    bar.innerHTML=`AI Thinking<span class="dot">.</span><span class="dot">.</span><span class="dot">.</span>`;
+  } else {
+    bar.style.color='var(--x)';
+    bar.textContent='Your turn — click a hex';
+  }
+}
+
+// ── Init ─────────────────────────────────────────────────────
+initGame(9);
+render();
+refreshStatus();
+</script>
+
+</body>
+</html>

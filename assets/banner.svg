@@ -1,0 +1,308 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 220" width="900" height="220">
+  <defs>
+    <style>
+      /* ── Fonts ── */
+      .t-logo { font-family: 'Courier New', Courier, monospace; font-weight: 900; }
+      .t-sub  { font-family: 'Courier New', Courier, monospace; }
+
+      /* ── Hex grid fade-in (staggered) ── */
+      .hg { opacity:0; animation: fadeIn 0.6s ease-out forwards; }
+      .hg.d1 { animation-delay: 0.05s; }
+      .hg.d2 { animation-delay: 0.15s; }
+      .hg.d3 { animation-delay: 0.28s; }
+      .hg.d4 { animation-delay: 0.42s; }
+      .hg.d5 { animation-delay: 0.58s; }
+      .hg.d6 { animation-delay: 0.76s; }
+      .hg.d7 { animation-delay: 0.96s; }
+      .hg.d8 { animation-delay: 1.18s; }
+      .hg.d9 { animation-delay: 1.42s; }
+      .hg.d10{ animation-delay: 1.68s; }
+      .hg.d11{ animation-delay: 1.96s; }
+      .hg.d12{ animation-delay: 2.26s; }
+      @keyframes fadeIn {
+        from { opacity:0; }
+        to   { opacity:0.22; }
+      }
+
+      /* ── Title appear ── */
+      .logo-text {
+        opacity:0;
+        animation: logoIn 1.1s cubic-bezier(0.2,0.8,0.3,1) 0.4s forwards;
+      }
+      @keyframes logoIn {
+        from { opacity:0; transform: translateY(-14px); }
+        to   { opacity:1; transform: translateY(0); }
+      }
+
+      /* ── Subtitle appear ── */
+      .sub-text {
+        opacity:0;
+        animation: subIn 0.8s ease-out 1.2s forwards;
+      }
+      @keyframes subIn {
+        from { opacity:0; }
+        to   { opacity:0.65; }
+      }
+
+      /* ── Badge appear ── */
+      .badge {
+        opacity:0;
+        animation: subIn 0.8s ease-out 1.6s forwards;
+      }
+
+      /* ── Floating amber piece ── */
+      .piece-x {
+        animation: floatX 3.6s ease-in-out 1.8s infinite;
+      }
+      @keyframes floatX {
+        0%,100% { transform: translateY(0px); }
+        50%     { transform: translateY(-8px); }
+      }
+
+      /* ── Floating blue piece ── */
+      .piece-o {
+        animation: floatO 3.6s ease-in-out 2.5s infinite;
+      }
+      @keyframes floatO {
+        0%,100% { transform: translateY(0px); }
+        50%     { transform: translateY(-8px); }
+      }
+
+      /* ── Piece appear ── */
+      .px-appear {
+        opacity:0;
+        animation: pxIn 0.5s cubic-bezier(0.17,0.89,0.32,1.28) 2.2s forwards;
+      }
+      .po-appear {
+        opacity:0;
+        animation: pxIn 0.5s cubic-bezier(0.17,0.89,0.32,1.28) 2.9s forwards;
+      }
+      @keyframes pxIn {
+        from { opacity:0; transform: scale(0.3); }
+        to   { opacity:1; transform: scale(1); }
+      }
+
+      /* ── Glow pulse on logo ── */
+      .logo-glow {
+        animation: glowPulse 4s ease-in-out 1.5s infinite;
+      }
+      @keyframes glowPulse {
+        0%,100% { filter: drop-shadow(0 0 8px rgba(245,166,35,0.5)); }
+        50%     { filter: drop-shadow(0 0 22px rgba(56,178,255,0.7)); }
+      }
+
+      /* ── Divider line draw ── */
+      .divider {
+        stroke-dasharray: 600;
+        stroke-dashoffset: 600;
+        animation: drawLine 1.2s ease-out 1.0s forwards;
+      }
+      @keyframes drawLine {
+        to { stroke-dashoffset: 0; }
+      }
+
+      /* ── Board cell appear ── */
+      .bc { opacity:0; animation: cellIn 0.35s ease-out forwards; }
+      .bc.b1  { animation-delay:1.8s; }
+      .bc.b2  { animation-delay:1.95s; }
+      .bc.b3  { animation-delay:2.1s; }
+      .bc.b4  { animation-delay:2.25s; }
+      .bc.b5  { animation-delay:2.4s; }
+      .bc.b6  { animation-delay:2.55s; }
+      .bc.b7  { animation-delay:2.7s; }
+      .bc.b8  { animation-delay:2.85s; }
+      .bc.b9  { animation-delay:3.0s; }
+      .bc.b10 { animation-delay:3.15s; }
+      @keyframes cellIn {
+        from { opacity:0; transform: scale(0.6); transform-origin: center; transform-box: fill-box; }
+        to   { opacity:1; transform: scale(1); }
+      }
+    </style>
+
+    <!-- Amber radial gradient for pieces -->
+    <radialGradient id="gx" cx="38%" cy="35%" r="60%">
+      <stop offset="0%"   stop-color="#ffe0a0"/>
+      <stop offset="100%" stop-color="#c07510"/>
+    </radialGradient>
+    <!-- Blue radial gradient for pieces -->
+    <radialGradient id="go" cx="38%" cy="35%" r="60%">
+      <stop offset="0%"   stop-color="#a8e4ff"/>
+      <stop offset="100%" stop-color="#0d5a9c"/>
+    </radialGradient>
+
+    <!-- Glow filters -->
+    <filter id="fx" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="4" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="fo" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="4" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+
+  <!-- ── Background ── -->
+  <rect width="900" height="220" fill="#070c18"/>
+  <!-- subtle vignette -->
+  <rect width="900" height="220" fill="url(#vignette)" opacity="0.4"/>
+
+  <!-- ── Hex grid background pattern (left side) ── -->
+  <!-- Row 0 -->
+  <polygon class="hg d1" points="30,14 47,24 47,44 30,54 13,44 13,24" fill="none" stroke="#f5a623" stroke-width="1"/>
+  <polygon class="hg d3" points="64,14 81,24 81,44 64,54 47,44 47,24" fill="none" stroke="#38b2ff" stroke-width="1"/>
+  <polygon class="hg d5" points="98,14 115,24 115,44 98,54 81,44 81,24" fill="none" stroke="#f5a623" stroke-width="1"/>
+  <polygon class="hg d7" points="132,14 149,24 149,44 132,54 115,44 115,24" fill="none" stroke="#38b2ff" stroke-width="1"/>
+  <!-- Row 1 (offset) -->
+  <polygon class="hg d2" points="47,44 64,54 64,74 47,84 30,74 30,54" fill="none" stroke="#38b2ff" stroke-width="1"/>
+  <polygon class="hg d4" points="81,44 98,54 98,74 81,84 64,74 64,54" fill="none" stroke="#f5a623" stroke-width="1"/>
+  <polygon class="hg d6" points="115,44 132,54 132,74 115,84 98,74 98,54" fill="none" stroke="#38b2ff" stroke-width="1"/>
+  <polygon class="hg d8" points="149,44 166,54 166,74 149,84 132,74 132,54" fill="none" stroke="#f5a623" stroke-width="1"/>
+  <!-- Row 2 -->
+  <polygon class="hg d3" points="30,74 47,84 47,104 30,114 13,104 13,84" fill="none" stroke="#f5a623" stroke-width="1"/>
+  <polygon class="hg d5" points="64,74 81,84 81,104 64,114 47,104 47,84" fill="none" stroke="#38b2ff" stroke-width="1"/>
+  <polygon class="hg d7" points="98,74 115,84 115,104 98,114 81,104 81,84" fill="none" stroke="#f5a623" stroke-width="1"/>
+  <polygon class="hg d9" points="132,74 149,84 149,104 132,114 115,104 115,84" fill="none" stroke="#38b2ff" stroke-width="1"/>
+  <!-- Row 3 (offset) -->
+  <polygon class="hg d4" points="47,104 64,114 64,134 47,144 30,134 30,114" fill="none" stroke="#38b2ff" stroke-width="1"/>
+  <polygon class="hg d6" points="81,104 98,114 98,134 81,144 64,134 64,114" fill="none" stroke="#f5a623" stroke-width="1"/>
+  <polygon class="hg d8" points="115,104 132,114 132,134 115,144 98,134 98,114" fill="none" stroke="#38b2ff" stroke-width="1"/>
+  <polygon class="hg d10" points="149,104 166,114 166,134 149,144 132,134 132,114" fill="none" stroke="#f5a623" stroke-width="1"/>
+  <!-- Row 4 -->
+  <polygon class="hg d5" points="30,134 47,144 47,164 30,174 13,164 13,144" fill="none" stroke="#f5a623" stroke-width="1"/>
+  <polygon class="hg d7" points="64,134 81,144 81,164 64,174 47,164 47,144" fill="none" stroke="#38b2ff" stroke-width="1"/>
+  <polygon class="hg d9" points="98,134 115,144 115,164 98,174 81,164 81,144" fill="none" stroke="#f5a623" stroke-width="1"/>
+  <polygon class="hg d11" points="132,134 149,144 149,164 132,174 115,164 115,144" fill="none" stroke="#38b2ff" stroke-width="1"/>
+
+  <!-- ── Right-side hex board: 5×5 game ── -->
+  <!-- (pre-computed positions: HS=16, HW=27.7, RH=24, MX=680, MY=30) -->
+  <!-- Grid cells -->
+  <g opacity="0.55">
+    <!-- Row 0 -->
+    <polygon class="bc b1"  points="694,30 707.9,38 707.9,54 694,62 680.1,54 680.1,38" fill="#0f1824" stroke="#1a2840" stroke-width="1"/>
+    <polygon class="bc b1"  points="721.7,30 735.6,38 735.6,54 721.7,62 707.8,54 707.8,38" fill="#0f1824" stroke="#1a2840" stroke-width="1"/>
+    <polygon class="bc b1"  points="749.4,30 763.3,38 763.3,54 749.4,62 735.5,54 735.5,38" fill="#0f1824" stroke="#1a2840" stroke-width="1"/>
+    <polygon class="bc b1"  points="777.1,30 791,38 791,54 777.1,62 763.2,54 763.2,38" fill="#0f1824" stroke="#1a2840" stroke-width="1"/>
+    <polygon class="bc b1"  points="804.8,30 818.7,38 818.7,54 804.8,62 790.9,54 790.9,38" fill="#0f1824" stroke="#1a2840" stroke-width="1"/>
+    <!-- Row 1 -->
+    <polygon class="bc b2"  points="707.9,54 721.8,62 721.8,78 707.9,86 694,78 694,62" fill="#0f1824" stroke="#1a2840" stroke-width="1"/>
+    <polygon class="bc b2"  points="735.6,54 749.5,62 749.5,78 735.6,86 721.7,78 721.7,62" fill="#0f1824" stroke="#1a2840" stroke-width="1"/>
+    <polygon class="bc b2"  points="763.3,54 777.2,62 777.2,78 763.3,86 749.4,78 749.4,62" fill="#0f1824" stroke="#1a2840" stroke-width="1"/>
+    <polygon class="bc b2"  points="791,54 804.9,62 804.9,78 791,86 777.1,78 777.1,62" fill="#0f1824" stroke="#1a2840" stroke-width="1"/>
+    <polygon class="bc b2"  points="818.7,54 832.6,62 832.6,78 818.7,86 804.8,78 804.8,62" fill="#0f1824" stroke="#1a2840" stroke-width="1"/>
+    <!-- Row 2 -->
+    <polygon class="bc b3"  points="721.8,78 735.7,86 735.7,102 721.8,110 707.9,102 707.9,86" fill="#0f1824" stroke="#1a2840" stroke-width="1"/>
+    <polygon class="bc b3"  points="749.5,78 763.4,86 763.4,102 749.5,110 735.6,102 735.6,86" fill="#0f1824" stroke="#1a2840" stroke-width="1"/>
+    <polygon class="bc b3"  points="777.2,78 791.1,86 791.1,102 777.2,110 763.3,102 763.3,86" fill="#0f1824" stroke="#1a2840" stroke-width="1"/>
+    <polygon class="bc b3"  points="804.9,78 818.8,86 818.8,102 804.9,110 791,102 791,86" fill="#0f1824" stroke="#1a2840" stroke-width="1"/>
+    <polygon class="bc b3"  points="832.6,78 846.5,86 846.5,102 832.6,110 818.7,102 818.7,86" fill="#0f1824" stroke="#1a2840" stroke-width="1"/>
+    <!-- Row 3 -->
+    <polygon class="bc b4"  points="735.7,102 749.6,110 749.6,126 735.7,134 721.8,126 721.8,110" fill="#0f1824" stroke="#1a2840" stroke-width="1"/>
+    <polygon class="bc b4"  points="763.4,102 777.3,110 777.3,126 763.4,134 749.5,126 749.5,110" fill="#0f1824" stroke="#1a2840" stroke-width="1"/>
+    <polygon class="bc b4"  points="791.1,102 805,110 805,126 791.1,134 777.2,126 777.2,110" fill="#0f1824" stroke="#1a2840" stroke-width="1"/>
+    <polygon class="bc b4"  points="818.8,102 832.7,110 832.7,126 818.8,134 804.9,126 804.9,110" fill="#0f1824" stroke="#1a2840" stroke-width="1"/>
+    <polygon class="bc b4"  points="846.5,102 860.4,110 860.4,126 846.5,134 832.6,126 832.6,110" fill="#0f1824" stroke="#1a2840" stroke-width="1"/>
+    <!-- Row 4 -->
+    <polygon class="bc b5"  points="749.6,126 763.5,134 763.5,150 749.6,158 735.7,150 735.7,134" fill="#0f1824" stroke="#1a2840" stroke-width="1"/>
+    <polygon class="bc b5"  points="777.3,126 791.2,134 791.2,150 777.3,158 763.4,150 763.4,134" fill="#0f1824" stroke="#1a2840" stroke-width="1"/>
+    <polygon class="bc b5"  points="805,126 818.9,134 818.9,150 805,158 791.1,150 791.1,134" fill="#0f1824" stroke="#1a2840" stroke-width="1"/>
+    <polygon class="bc b5"  points="832.7,126 846.6,134 846.6,150 832.7,158 818.8,150 818.8,134" fill="#0f1824" stroke="#1a2840" stroke-width="1"/>
+    <polygon class="bc b5"  points="860.4,126 874.3,134 874.3,150 860.4,158 846.5,150 846.5,134" fill="#0f1824" stroke="#1a2840" stroke-width="1"/>
+  </g>
+
+  <!-- Placed game pieces on the mini board (appearing after board loads) -->
+  <!-- X pieces (amber) -->
+  <g class="bc b6">
+    <polygon points="749.5,78 763.4,86 763.4,102 749.5,110 735.6,102 735.6,86" fill="#f5a623" stroke="#a86d10" stroke-width="1.5"/>
+    <circle cx="749.5" cy="94" r="5" fill="#000" opacity="0.18"/>
+  </g>
+  <g class="bc b8">
+    <polygon points="777.2,78 791.1,86 791.1,102 777.2,110 763.3,102 763.3,86" fill="#f5a623" stroke="#a86d10" stroke-width="1.5"/>
+    <circle cx="777.2" cy="94" r="5" fill="#000" opacity="0.18"/>
+  </g>
+  <g class="bc b10">
+    <polygon points="805,126 818.9,134 818.9,150 805,158 791.1,150 791.1,134" fill="#f5a623" stroke="#a86d10" stroke-width="1.5"/>
+    <circle cx="805" cy="142" r="5" fill="#000" opacity="0.18"/>
+  </g>
+
+  <!-- O pieces (blue) -->
+  <g class="bc b7">
+    <polygon points="763.3,54 777.2,62 777.2,78 763.3,86 749.4,78 749.4,62" fill="#38b2ff" stroke="#1060a0" stroke-width="1.5"/>
+    <circle cx="763.3" cy="70" r="5" fill="#000" opacity="0.18"/>
+  </g>
+  <g class="bc b9">
+    <polygon points="791,102 804.9,110 804.9,126 791,134 777.1,126 777.1,110" fill="#38b2ff" stroke="#1060a0" stroke-width="1.5"/>
+    <circle cx="791" cy="118" r="5" fill="#000" opacity="0.18"/>
+  </g>
+
+  <!-- ── Divider line ── -->
+  <line class="divider" x1="190" y1="20" x2="190" y2="200" stroke="#1a2840" stroke-width="1"/>
+
+  <!-- ── Title ── -->
+  <g class="logo-glow">
+    <text class="logo-text t-logo" x="440" y="110"
+          text-anchor="middle"
+          font-size="92" fill="url(#grad1)"
+          letter-spacing="28">HEX</text>
+  </g>
+  <defs>
+    <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%"   stop-color="#f5a623"/>
+      <stop offset="45%"  stop-color="#fff4dc"/>
+      <stop offset="55%"  stop-color="#c8eaff"/>
+      <stop offset="100%" stop-color="#38b2ff"/>
+    </linearGradient>
+  </defs>
+  <text class="t-logo logo-text" x="440" y="110"
+        text-anchor="middle"
+        font-size="92" fill="url(#grad1)"
+        letter-spacing="28">HEX</text>
+
+  <!-- ── Subtitle ── -->
+  <text class="t-sub sub-text" x="440" y="145"
+        text-anchor="middle"
+        font-size="12.5" fill="#4a6a88"
+        letter-spacing="5">AI STRATEGY BOARD GAME · ALPHA-BETA MINIMAX</text>
+
+  <!-- ── Badges ── -->
+  <g class="badge">
+    <!-- Python badge -->
+    <rect x="278" y="162" width="70" height="22" rx="5" fill="#1a2840"/>
+    <text x="313" y="177" text-anchor="middle" font-family="monospace" font-size="10" fill="#38b2ff" letter-spacing="1">PYTHON</text>
+
+    <!-- MIT badge -->
+    <rect x="356" y="162" width="52" height="22" rx="5" fill="#1a2840"/>
+    <text x="382" y="177" text-anchor="middle" font-family="monospace" font-size="10" fill="#f5a623" letter-spacing="1">MIT</text>
+
+    <!-- AI badge -->
+    <rect x="416" y="162" width="52" height="22" rx="5" fill="#1a2840"/>
+    <text x="442" y="177" text-anchor="middle" font-family="monospace" font-size="10" fill="#80ddff" letter-spacing="1">AI · BFS</text>
+
+    <!-- Minimax badge -->
+    <rect x="476" y="162" width="78" height="22" rx="5" fill="#1a2840"/>
+    <text x="515" y="177" text-anchor="middle" font-family="monospace" font-size="10" fill="#ffd870" letter-spacing="1">MINIMAX</text>
+  </g>
+
+  <!-- ── Floating pieces ── -->
+  <g class="px-appear">
+    <g class="piece-x">
+      <circle cx="236" cy="90" r="22" fill="url(#gx)" filter="url(#fx)" opacity="0.9"/>
+      <circle cx="236" cy="90" r="10" fill="#000" opacity="0.15"/>
+      <text x="236" y="86" text-anchor="middle" font-family="monospace" font-size="11" font-weight="900" fill="#fff" letter-spacing="1" opacity="0.9">X</text>
+    </g>
+  </g>
+
+  <g class="po-appear">
+    <g class="piece-o">
+      <circle cx="642" cy="96" r="22" fill="url(#go)" filter="url(#fo)" opacity="0.9"/>
+      <circle cx="642" cy="96" r="10" fill="#000" opacity="0.15"/>
+      <text x="642" y="92" text-anchor="middle" font-family="monospace" font-size="11" font-weight="900" fill="#fff" letter-spacing="1" opacity="0.9">O</text>
+    </g>
+  </g>
+
+  <!-- ── Player labels ── -->
+  <g class="badge">
+    <text x="236" y="128" text-anchor="middle" font-family="monospace" font-size="9" fill="#f5a623" opacity="0.7" letter-spacing="2">PLAYER</text>
+    <text x="642" y="130" text-anchor="middle" font-family="monospace" font-size="9" fill="#38b2ff" opacity="0.7" letter-spacing="2">A.I.</text>
+  </g>
+
+</svg>
